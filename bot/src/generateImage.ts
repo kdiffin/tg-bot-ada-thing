@@ -1,7 +1,14 @@
 import { inference, model } from "./huggingface";
 
-export async function generateSingleImage(ctx: any, message: string) {
+export async function generateSingleImage(
+  ctx: any,
+  message: string,
+  displayPrompt?: string
+) {
   // Send the "Generating image..." message and capture its ID
+  if (displayPrompt) {
+    ctx.reply(displayPrompt);
+  }
   const generatingMessage = await ctx.reply("Generating image...");
   let generatingMessageId = generatingMessage.message_id;
 

@@ -1,0 +1,99 @@
+import { Context, Markup, Telegraf } from "telegraf";
+import { generateSingleImage } from "./generateImage";
+import prompts from "./prompts";
+import {
+  getRandomAnimePrompt,
+  getRandomPrompt,
+  getRandomPromptAll,
+  getRandomPromptBrainrot,
+} from "./utils";
+import { Update } from "telegraf/typings/core/types/typegram";
+
+export function setupCommands(bot: Telegraf<Context<Update>>) {
+  bot.start((ctx) => {
+    const randomPrompt1 = getRandomPrompt();
+    const randomPrompt2 = getRandomPrompt();
+    const randomPrompt3 = getRandomPrompt();
+
+    ctx.replyWithMarkdownV2(
+      `👋 **Welcome to KDiffImage Bot\\!**\n\n` +
+        `🖼️ Here you can create any image you want with the **Stable Diffusion AI**\\!\\! \n\n` +
+        `⚙️ **Commands you can use:**\n` +
+        `\\- \`/generateimage\`:   Generate a single image based on your prompt\\.\n` +
+        `\\- \`/multiimage\`:   Generate **3 images** from a single prompt\\.\n` +
+        `\\- \`/recommended\`:   Recommends **3 prompts** to try\\.\n` +
+        `\\- \`/random\`:   Generates a totally random image\\.\n` +
+        `\\- \`/anime\`:   Generates a funny **anime\\-themed** picture\\.\n\n` +
+        `💻 **Source Code:** [View on GitHub](https://github\\.com/kdiffin/tg-bot-ada-thing)\n\n` +
+        `🌟 Don't have any ideas? Try these prompts:\n\n` +
+        `\\- \`${"/generateimage " + randomPrompt1}\`\n` +
+        `\\- \`${"/multiimage " + randomPrompt2}\`\n` +
+        `\\- \`${"/generateimage " + randomPrompt3}\`\n`,
+
+      Markup.inlineKeyboard([
+        [
+          Markup.button.callback("🌟 Recommended Prompts", "show_recommended"),
+          Markup.button.callback("🎴 Anime-Themed Image", "generate_anime"),
+          Markup.button.callback(
+            "🚽 Brainrot-Themed Image",
+            "generate_brainrot"
+          ),
+        ],
+        [Markup.button.callback("🔄 Generate Random Image", "generate_random")],
+      ])
+    );
+  });
+
+  bot.command("generateimage", async (ctx) => {
+    const message = ctx.message?.text.split(" ").slice(1).join(" ");
+    if (!message) {
+      ctx.reply("Please provide a text prompt after `/generateimage`.");
+      return;
+    }
+    await generateSingleImage(ctx, message);
+  });
+
+  bot.command("multiimage", async (ctx) => {
+    const message = ctx.message?.text.split(" ").slice(1).join(" ");
+    if (!message) {
+      ctx.reply("Please provide a text prompt after `/multiimage`.");
+      return;
+    }
+    const promises = [
+      generateSingleImage(ctx, message),
+      generateSingleImage(ctx, message),
+      generateSingleImage(ctx, message),
+    ];
+    // this makes it so that if ONE error happens the whole thing isnt cancelled
+    await Promise.allSettled(promises);
+    ctx.reply("Batch image generation complete.");
+  });
+
+  bot.command("recommended", (ctx) => {
+    const randomPrompt1 = getRandomPrompt();
+    const randomPrompt2 = getRandomPrompt();
+    const randomPrompt3 = getRandomPrompt();
+
+    ctx.replyWithMarkdownV2(
+      `🌟 **Here are some cool prompts you should try\\!\\!**\n\n` +
+        `\`${"/generateimage " + randomPrompt1}\`\n` +
+        `\`${"/multiimage " + randomPrompt2}\`\n` +
+        `\`${"/generateimage " + randomPrompt3}\`\n`
+    );
+  });
+
+  bot.command("anime", async (ctx) => {
+    const prompt = getRandomAnimePrompt();
+    await generateSingleImage(ctx, prompt, prompt);
+  });
+
+  bot.command("brainrot", async (ctx) => {
+    const prompt = getRandomPromptBrainrot();
+    await generateSingleImage(ctx, prompt, prompt);
+  });
+
+  bot.command("random", async (ctx) => {
+    const prompt = getRandomPromptAll();
+    await generateSingleImage(ctx, prompt, prompt);
+  });
+}

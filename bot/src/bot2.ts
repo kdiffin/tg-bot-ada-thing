@@ -1,28 +1,32 @@
 import { Telegraf } from "telegraf";
 import { inference, model } from "./huggingface";
 import { generateSingleImage } from "./generateImage";
+import prompts, { animePopCulturePrompts } from "./prompts";
+import { setupCommands } from "./commands";
+import { setupButtons } from "./buttons";
 
 // Replace with your BotFather token
 const bot = new Telegraf("7733586668:AAFh2vC5Xdwmg4nTxy334hK36rftz5iH5WM"); // Add your bot token here
 
-// Define behavior for /start command
-bot.start((ctx) => {
-  ctx.reply("Hello, World!");
-});
+// Setup commands
+setupCommands(bot);
 
-// Define behavior for /generateimage command
-bot.command("generateimage", async (ctx) => {
-  const message = ctx.message?.text.split(" ").slice(1).join(" ");
+// Setup inline buttons
+setupButtons(bot);
 
-  if (!ctx.message || ctx.message.text === undefined) {
-    ctx.reply(
-      "This command only works with text messages. Please provide a text prompt after /generateimage."
-    );
-    return;
-  }
+bot.telegram.setMyCommands([
+  { command: "start", description: "Start interacting with the bot" },
+  { command: "generateimage", description: "Generate a single image" },
+  { command: "multiimage", description: "Generate up to 3 images" },
+  { command: "recommended", description: "Get recommended prompts" },
+  { command: "anime", description: "Generate an anime-themed image" },
+  {
+    command: "brainrot",
+    description: "Generate a gen-z brainrot-themed image",
+  },
 
-  await generateSingleImage(ctx, message);
-});
+  { command: "random", description: "Generate a totally random image" },
+]);
 
 // Launch the bot
 bot

@@ -32,7 +32,6 @@ export function setupCommands(bot: Telegraf<Context<Update>>) {
 
       Markup.inlineKeyboard([
         [
-          Markup.button.callback("🌟 Recommended Prompts", "show_recommended"),
           Markup.button.callback("🎴 Anime-Themed Image", "generate_anime"),
           Markup.button.callback(
             "🚽 Brainrot-Themed Image",
@@ -40,6 +39,7 @@ export function setupCommands(bot: Telegraf<Context<Update>>) {
           ),
         ],
         [Markup.button.callback("🔄 Generate Random Image", "generate_random")],
+        [Markup.button.callback("🌟 Recommended Prompts", "show_recommended")],
       ])
     );
   });
@@ -69,16 +69,19 @@ export function setupCommands(bot: Telegraf<Context<Update>>) {
     ctx.reply("Batch image generation complete.");
   });
 
-  bot.command("recommended", (ctx) => {
+  bot.command("recommended", async (ctx) => {
     const randomPrompt1 = getRandomPrompt();
     const randomPrompt2 = getRandomPrompt();
     const randomPrompt3 = getRandomPrompt();
 
-    ctx.replyWithMarkdownV2(
+    const message = await ctx.replyWithMarkdownV2(
       `🌟 **Here are some cool prompts you should try\\!\\!**\n\n` +
         `\`${"/generateimage " + randomPrompt1}\`\n` +
         `\`${"/multiimage " + randomPrompt2}\`\n` +
-        `\`${"/generateimage " + randomPrompt3}\`\n`
+        `\`${"/generateimage " + randomPrompt3}\`\n`,
+      Markup.inlineKeyboard([
+        [Markup.button.callback("🔁 Different Prompts", "replace_recommended")],
+      ])
     );
   });
 

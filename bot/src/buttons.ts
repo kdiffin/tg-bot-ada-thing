@@ -6,41 +6,81 @@ import {
   getRandomPromptBrainrot,
 } from "./utils";
 import { Update } from "telegraf/typings/core/types/typegram";
+import { inlineKeyboard } from "telegraf/typings/markup";
 
 export function setupButtons(bot: Telegraf<Context<Update>>) {
-  bot.action("generate_random", async (ctx) => {
-    const prompt = getRandomPrompt();
-    await generateSingleImage(ctx, prompt);
-    ctx.reply("Generated a random image!");
-    ctx.answerCbQuery("Generated a random image!");
-  });
-
-  bot.action("generate_anime", async (ctx) => {
-    const prompt = getRandomAnimePrompt();
-    await generateSingleImage(ctx, prompt);
-    ctx.reply("Generated an anime-themed image!");
-    ctx.answerCbQuery("Generated an anime-themed image!");
-  });
-
-  bot.action("generate_brainrot", async (ctx) => {
-    const prompt = getRandomPromptBrainrot();
-    await generateSingleImage(ctx, prompt);
-    ctx.reply("Generated a brainrot-themed image!");
-    ctx.answerCbQuery("Generated a brainrot-themed image!");
-  });
-
-  bot.action("show_recommended", (ctx) => {
+  // change recommendations function
+  bot.action("replace_recommended", async (ctx) => {
     const randomPrompt1 = getRandomPrompt();
     const randomPrompt2 = getRandomPrompt();
     const randomPrompt3 = getRandomPrompt();
 
-    ctx.reply(
-      `🌟 **Here are some cool prompts you should try!!**\n\n` +
+    await ctx.editMessageText(
+      `🌟 **Here are some cool prompts you should try\\!\\!**\n\n` +
         `\`${"/generateimage " + randomPrompt1}\`\n` +
         `\`${"/multiimage " + randomPrompt2}\`\n` +
         `\`${"/generateimage " + randomPrompt3}\`\n`,
-      { parse_mode: "Markdown" }
+      {
+        parse_mode: "MarkdownV2",
+
+        // Add button to replace recommended here
+        reply_markup: {
+          inline_keyboard: [
+            [
+              Markup.button.callback(
+                "🔁 Different Prompts",
+                "replace_recommended"
+              ),
+            ],
+          ],
+        },
+      }
     );
-    ctx.answerCbQuery("Check out these recommended prompts!");
+
+    await ctx.answerCbQuery();
+  });
+
+  bot.action("generate_random", async (ctx) => {
+    // Acknowledge the callback query immediately
+    const prompt = getRandomPrompt();
+    await ctx.answerCbQuery("Generating " + prompt + "...");
+
+    await generateSingleImage(ctx, prompt, prompt);
+    ctx.reply("Generated " + prompt);
+  });
+
+  bot.action("generate_anime", async (ctx) => {
+    const prompt = getRandomAnimePrompt();
+    // Acknowledge the callback query immediately
+    await ctx.answerCbQuery("Generating " + prompt + "...");
+
+    await generateSingleImage(ctx, prompt, prompt);
+    ctx.reply("Generated " + prompt);
+  });
+
+  bot.action("show_recommended", async (ctx) => {
+    const randomPrompt1 = getRandomPrompt();
+    const randomPrompt2 = getRandomPrompt();
+    const randomPrompt3 = getRandomPrompt();
+
+    await ctx.replyWithMarkdownV2(
+      `🌟 **Here are some cool prompts you should try\\!\\!**\n\n` +
+        `\`${"/generateimage " + randomPrompt1}\`\n` +
+        `\`${"/multiimage " + randomPrompt2}\`\n` +
+        `\`${"/generateimage " + randomPrompt3}\`\n`,
+      Markup.inlineKeyboard([
+        [Markup.button.callback("🔁 Different Prompts", "replace_recommended")],
+      ])
+    );
+    await ctx.answerCbQuery();
+  });
+
+  bot.action("generate_brainrot", async (ctx) => {
+    // Acknowledge the callback query immediately
+    const prompt = getRandomPromptBrainrot();
+    await ctx.answerCbQuery("Generating a  " + prompt + "...");
+
+    await generateSingleImage(ctx, prompt, prompt);
+    ctx.reply("Generated  " + prompt + "!");
   });
 }

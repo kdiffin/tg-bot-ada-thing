@@ -1,7 +1,7 @@
 import { Telegraf } from "telegraf";
 
 // Replace with your BotFather token
-const bot = new Telegraf("7733586668:AAFh2vC5Xdwmg4nTxy334hK36rftz5iH5WM"); // Add your bot token here
+const bot = new Telegraf(""); // Add your bot token here
 
 // Define behavior for /start command
 bot.start((ctx) => {

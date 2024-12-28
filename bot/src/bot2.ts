@@ -4,9 +4,10 @@ import { generateSingleImage } from "./generateImage";
 import prompts, { animePopCulturePrompts } from "./prompts";
 import { setupCommands } from "./commands";
 import { setupButtons } from "./buttons";
+import "dotenv/config";
 
 // Replace with your BotFather token
-const bot = new Telegraf("7733586668:AAFh2vC5Xdwmg4nTxy334hK36rftz5iH5WM"); // Add your bot token here
+const bot = new Telegraf(process.env.BOT_TOKEN ?? "");
 
 // Setup commands
 setupCommands(bot);

@@ -21,6 +21,7 @@ export function setupCommands(bot: Telegraf<Context<Update>>) {
       `👋 **Welcome to kdiffimage Bot\\!**\n\n` +
         `🖼️ Here you can create any image you want with the **Stable Diffusion AI**\\!\\! \n\n` +
         `**❗ You can log in to the website to make your images private/public and share them ❗**\n` +
+        `**❗ By default all generated images are PRIVATE\n` +
         `\`https://tg-bot-ada-thing.vercel.app\` \n\n` +
         `⚙️ **Commands you can use:**\n` +
         `\\- \`/generateimage\`:   Generate a single image based on your prompt\\.\n` +

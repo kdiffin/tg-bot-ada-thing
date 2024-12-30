@@ -35,6 +35,9 @@ export default function UserPage() {
       <h1 className="text-2xl font-bold text-white mb-8">
         Images by {username}
       </h1>
+      <p className="mb-8 text-muted-foreground italic">
+        If you're {username}, please log in to see all images.
+      </p>
       <ImageGrid images={images} />
     </>
   );

@@ -18,8 +18,10 @@ export function setupCommands(bot: Telegraf<Context<Update>>) {
     const randomPrompt3 = getRandomPrompt();
 
     ctx.replyWithMarkdownV2(
-      `👋 **Welcome to KDiffImage Bot\\!**\n\n` +
+      `👋 **Welcome to kdiffimage Bot\\!**\n\n` +
         `🖼️ Here you can create any image you want with the **Stable Diffusion AI**\\!\\! \n\n` +
+        `**❗ You can log in to the website to make your images private/public and share them ❗**\n` +
+        `\`https://tg-bot-ada-thing.vercel.app\` \n\n` +
         `⚙️ **Commands you can use:**\n` +
         `\\- \`/generateimage\`:   Generate a single image based on your prompt\\.\n` +
         `\\- \`/multiimage\`:   Generate **3 images** from a single prompt\\.\n` +
@@ -84,6 +86,7 @@ export function setupCommands(bot: Telegraf<Context<Update>>) {
       `🎨 **Your Profile**\n\n` +
         `**Name:** ${first_name}\n` +
         `**Username:** @${username}\n\n` +
+        `**Note:** Please log in to see all of your images\n\n` +
         `Click below to see all your generated images\\!`,
       Markup.inlineKeyboard([
         [

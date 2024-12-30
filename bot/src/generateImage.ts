@@ -1,4 +1,5 @@
 import { inference, model } from "./huggingface";
+import prismaClient from "./prisma";
 
 export async function generateSingleImage(
   ctx: any,
@@ -24,7 +25,19 @@ export async function generateSingleImage(
     const buffer = Buffer.from(blobBuffer);
 
     // Send the generated image
-    await ctx.replyWithPhoto({ source: buffer });
+    ctx.replyWithPhoto({ source: buffer });
+
+    const base64Image = buffer.toString("base64");
+    // Save the result to the database
+    await prismaClient.image.create({
+      data: {
+        usersTelegramID: ctx.from.id.toString(),
+        usersName: ctx.from.username ?? "Unknown",
+        image: base64Image,
+        public: false,
+        imagePrompt: message,
+      },
+    });
   } catch (error) {
     console.error("Error while generating the image:", error);
     await ctx.reply("An error occurred while processing your request.");

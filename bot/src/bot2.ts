@@ -27,6 +27,10 @@ bot.telegram.setMyCommands([
   },
 
   { command: "random", description: "Generate a totally random image" },
+  {
+    command: "showprofile",
+    description: "See all the images you've generated!",
+  },
 ]);
 
 // Launch the bot

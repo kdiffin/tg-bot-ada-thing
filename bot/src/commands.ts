@@ -11,6 +11,8 @@ import { Update } from "telegraf/typings/core/types/typegram";
 
 export function setupCommands(bot: Telegraf<Context<Update>>) {
   bot.start((ctx) => {
+    const { username } = ctx.from;
+
     const randomPrompt1 = getRandomPrompt();
     const randomPrompt2 = getRandomPrompt();
     const randomPrompt3 = getRandomPrompt();
@@ -39,6 +41,12 @@ export function setupCommands(bot: Telegraf<Context<Update>>) {
           ),
         ],
         [Markup.button.callback("🔄 Generate Random Image", "generate_random")],
+        [
+          Markup.button.url(
+            "🖼 View Your Gallery",
+            `http://192.168.1.66/user/${username}`
+          ),
+        ],
         [Markup.button.callback("🌟 Recommended Prompts", "show_recommended")],
       ])
     );
@@ -67,6 +75,25 @@ export function setupCommands(bot: Telegraf<Context<Update>>) {
     // this makes it so that if ONE error happens the whole thing isnt cancelled
     await Promise.allSettled(promises);
     ctx.reply("Batch image generation complete.");
+  });
+
+  bot.command("showprofile", async (ctx) => {
+    const { first_name, username } = ctx.from;
+
+    await ctx.replyWithMarkdownV2(
+      `🎨 **Your Profile**\n\n` +
+        `**Name:** ${first_name}\n` +
+        `**Username:** @${username}\n\n` +
+        `Click below to see all your generated images\\!`,
+      Markup.inlineKeyboard([
+        [
+          Markup.button.url(
+            "🖼 View Your Gallery",
+            `http://192.168.1.66/user/${username}`
+          ),
+        ],
+      ])
+    );
   });
 
   bot.command("recommended", async (ctx) => {

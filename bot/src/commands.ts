@@ -44,7 +44,7 @@ export function setupCommands(bot: Telegraf<Context<Update>>) {
         [
           Markup.button.url(
             "🖼 View Your Gallery",
-            `http://192.168.1.66/user/${username}`
+            `https://tg-bot-ada-thing.vercel.app/user/${username}`
           ),
         ],
         [Markup.button.callback("🌟 Recommended Prompts", "show_recommended")],
@@ -89,7 +89,7 @@ export function setupCommands(bot: Telegraf<Context<Update>>) {
         [
           Markup.button.url(
             "🖼 View Your Gallery",
-            `http://192.168.1.66/user/${username}`
+            `https://tg-bot-ada-thing.vercel.app/user/${username}`
           ),
         ],
       ])
